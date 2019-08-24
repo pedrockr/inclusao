@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <title>{{ config('app.name', 'Laravel') }}</title>
+
+    <!-- Scripts -->
+    <script src="{{ asset('js/app.js') }}" defer></script>
+
+    <!-- Fonts -->
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+
+    <!-- Styles -->
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <style>
+        .bgBlack{
+            background-color: #333333;
+            height: 100px;  
+            margin: 0 auto;
+        }
+        .bgBlackFooter{
+            background-color: #333333;
+            height: 80px;  
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <nav class="navbar navbar-expand-md navbar-dark shadow-sm bgBlack">
+            <div class="container-fluid">
+                <a style="font-size:250%" class="navbar-brand" href="{{ url('/home') }}">
+                    <b>INCLUSÃO</b>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <!-- Left Side Of Navbar -->
+                    <ul class="navbar-nav mr-auto">
+
+                    </ul>
+
+                    <!-- Right Side Of Navbar -->
+                    <ul class="navbar-nav ml-auto">
+                        <!-- Authentication Links -->
+                        @guest
+                            <li class="nav-item">
+                                <a style="font-size:150%" class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                            </li>
+                            <!-- @if (Route::has('register'))
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                                </li>
+                            @endif -->
+                        @else
+                            <li class="nav-item dropdown">
+                                <a style="font-size:150%" id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    {{ Auth::user()->name }} <span class="caret"></span>
+                                </a>
+
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="{{ route('logout') }}"
+                                       onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
+                                        {{ __('Logout') }}
+                                    </a>
+
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                        @csrf
+                                    </form>
+                                </div>
+                            </li>
+                        @endguest
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- verificar quem esta acessando o site para mostrar o menu lateral de acordo com o nivel de acesso
+         -->
+         <!-- Verifica se eh um convidado que esta acessando o site, ou seja, alguem que nao esteja logado ao site -->
+        @guest
+            <div class="container-fluid">
+            <br>
+                <div class="row">
+                    <div class="col-3">
+                        <h2><strong>Educação Inclusiva</strong></h2>
+                        <p class="lead">
+                        Informações sobre o site
+                        </p>
+                        <ul class="list list-ok strong bigger">
+                        <li>Teste</li>
+                        <li>Teste</li>
+                        <li>Teste</li>
+                        </ul>
+
+                    </div>
+                <div class="col">
+                    <main class="py-4">
+                        @yield('content')
+                        </main>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="">
+                @include('layouts.footer') 
+            </div>
+        <!-- Caso esteja logado -->
+        @else
+        <!-- verificar quem esta logando ao sistema, administrador, usuario ou TO para apresentar o menu adequado ao nivel -->
+            @if(Auth::user()->nivel_acesso == "Admin")
+                <div class="container-fluid">
+                <br>
+                    <div class="row">
+                        <div class="col-3">
+                            <h2><strong>Educação Inclusiva</strong></h2>
+                            <p class="lead">Alunos</p>
+                            <ul class="nav flex-column">
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="/inclusao/public/inclusao/create">Cadastrar Alunos</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/inclusao/public/inclusao/">Editar Alunos Cadastrados</a>
+                                </li>
+                            </ul>
+                            <p class="lead">Usuários</p>
+                            <ul class="nav flex-column">
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="/inclusao/public/registrar/create">Cadastrar Usuários</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="/inclusao/public/registrar">Editar Usuários</a>
+                                </li>
+                            </ul>
+                            <p class="lead">Escolas / Bairros</p>
+                            <ul class="nav flex-column">
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="/inclusao/public/cadastrar_escola-bairro">Cadastrar Escolas/Bairros</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col">
+                            <main class="py-4">
+                                    @yield('content')
+                            </main>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="">
+                @include('layouts.footer') 
+                </div>
+            @elseif (Auth::user()->nivel_acesso == "Escola")
+                <div class="col">
+                    <main class="py-4">
+                            @yield('content')
+                    </main>
+                </div>
+            @else
+                <div class="col">
+                    <main class="py-4">
+                            @yield('content')
+                    </main>
+                </div>
+            @endif
+        
+        @endguest        
+        
+    </div>
+    
+</body>
+</html>
